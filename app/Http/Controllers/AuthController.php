@@ -15,7 +15,7 @@ class AuthController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string',
-            'email' => 'required|email|string|unique:user,email',
+            'email' => 'required|email|string|unique:users,email',
             'password' => [
                 'required',
                 'confirmed',
@@ -29,7 +29,7 @@ class AuthController extends Controller
             'password' => bcrypt($data['password']),
         ]);
 
-        $token = $user->createToken('main')->plainTestToken;
+        $token = $user->createToken('main')->plainTextToken;
 
         return response([
            'user' => $user,
