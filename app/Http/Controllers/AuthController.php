@@ -50,7 +50,7 @@ class AuthController extends Controller
         unset($credentials['remember']);
         if (!Auth::attempt($credentials, $remember)) {
             return response([
-                'error' => 'validation error'], 422);
+                'error' => 'Credentials are not correct'], 422);
         }
 
         $user = Auth::user();
@@ -59,6 +59,16 @@ class AuthController extends Controller
         return response([
             'user' => $user,
             'token' => $token,
+        ]);
+    }
+
+    function logout(Request $request)
+    {
+        $user = Auth::user();
+        $user->currentAccessToken()->delete();
+
+        return response([
+            'success' => true,
         ]);
     }
 }

@@ -23,17 +23,17 @@ const store = createStore({
     login({commit}, user)
     {
       return axiosClient.post('/login', user)
-        .then((data) => {
-          commit('setUser', data);
-          return data
+        .then((response) => {
+          commit('setUser', response);
+          return response
         });
     },
     logout({commit})
     {
-      return axiosClient.post('/logout', user)
-        .then((data) => {
-          commit('logout', data);
-          return data
+      return axiosClient.post('/logout')
+        .then((response) => {
+          commit('logout');
+          return response
         });
     }
   },
@@ -42,10 +42,10 @@ const store = createStore({
       state.user.data = {};
       state.user.token = null;
     },
-    setUser: (state, userData) => {
-      state.user.data = userData.data;
-      state.user.token = userData.token;
-      sessionStorage.setItem('Token', userData.token);
+    setUser: (state, response) => {
+      state.user.data = response.data.user;
+      state.user.token = response.data.token;
+      sessionStorage.setItem('Token', response.data.token);
     }
   },
   modules: {},
