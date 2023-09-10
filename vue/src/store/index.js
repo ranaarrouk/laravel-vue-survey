@@ -27,6 +27,14 @@ const store = createStore({
           commit('setUser', data);
           return data
         });
+    },
+    logout({commit})
+    {
+      return axiosClient.post('/logout', user)
+        .then((data) => {
+          commit('logout', data);
+          return data
+        });
     }
   },
   mutations: {
