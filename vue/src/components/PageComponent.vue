@@ -11,15 +11,12 @@
   </main>
 </template>
 
-<script>
-  export default {
-    name: "PageComponent"
-  }
+<script setup>
+
   import { defineProps } from 'vue';
 
-  const props = defineProps({
-    title: String
-  });
+ defineProps(['title']);
+
 </script>
 
 <style scoped>
