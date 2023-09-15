@@ -78,13 +78,43 @@ hover:bg-gray-50  focus:ring-2 focus:offset-ring-2 focus:outline-none focus:ring
         </div>
         <!--        End of Survey fields-->
 
+        <!--        Questions-->
+        <div class="px-4 py-5 space-y-6 bg-white sm:p-6">
+          <h3 class="flex items-center justify-between font-semibold text-2xl">Questions
+            <button type="button"
+                    @click="addQuestion"
+                    class="flex items-center px-4 py-1 bg-gray-600 hover:bg-gray-700 rounded-sm
+                   text-white text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                   stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+              </svg>
+              Add Question
+            </button>
+          </h3>
+          <div v-if="!model.questions.length" class="text-center text-gray-600">
+            There is no questions yet.
+          </div>
+          <div v-for="(question, index) in model.questions">
+            <QuestionEditor
+              :question="question"
+              :index="index"
+              @change="questionChange"
+              @addQuestion="addQuestion"
+              @deleteQuestion="deleteQuestion">
+            </QuestionEditor>
+          </div>
+        </div>
+        <!--        Questions-->
+
         <div class="px-4 py-3 bg-grey-50 text-right sm:px-6">
           <button type="submit"
                   class=" inline-flex justify-center
                   px-4 py-2 bg-indigo-600 hover:bg-indigo-700
                   border border-transparent text-white shadow-sm
                   focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:outline-none
-                  sm:text-sm font-medium">Save</button>
+                  sm:text-sm font-medium">Save
+          </button>
         </div>
       </div>
     </form>
