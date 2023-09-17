@@ -125,6 +125,8 @@ hover:bg-gray-50  focus:ring-2 focus:offset-ring-2 focus:outline-none focus:ring
 <script setup>
 
   import PageComponent from "../components/PageComponent.vue";
+  import QuestionEditor from "../components/editor/QuestionEditor.vue";
+
   import store from "../store";
   import {useRoute} from "vue-router";
   import {ref} from "vue";
