@@ -49,16 +49,16 @@ const router = createRouter({
 
 });
 
-// router.beforeEach((to, from, next) => {
-//   if (to.meta.requiresAuth && !store.state.user.token){
-//     next({name: 'Login'})
-//   }
-//   else if(store.state.user.token && to.meta.isGest ){
-//     next({name: 'Dashboard'})
-//   }
-//   else {
-//     next();
-//   }
-// });
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !store.state.user.token){
+    next({name: 'Login'})
+  }
+  else if(store.state.user.token && to.meta.isGest ){
+    next({name: 'Dashboard'})
+  }
+  else {
+    next();
+  }
+});
 
 export default router;
