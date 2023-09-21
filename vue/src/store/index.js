@@ -20,10 +20,10 @@ const tmpSurveys = [
         description: null,
         data: {
           options: [
-            { uuid: "9855989798", text: "Syria"},
-            { uuid: "944989798", text: "Canada"},
-            { uuid: "339989798", text: "US"},
-            { uuid: "985489798", text: "UK"},
+            {uuid: "9855989798", text: "Syria"},
+            {uuid: "944989798", text: "Canada"},
+            {uuid: "339989798", text: "US"},
+            {uuid: "985489798", text: "UK"},
           ],
         }
       },
@@ -34,10 +34,10 @@ const tmpSurveys = [
         description: "test test test",
         data: {
           options: [
-            { uuid: "98559897", text: "PHP"},
-            { uuid: "9449897", text: "C#"},
-            { uuid: "3399897", text: "JAVA"},
-            { uuid: "9854897", text: "C++"},
+            {uuid: "98559897", text: "PHP"},
+            {uuid: "9449897", text: "C#"},
+            {uuid: "3399897", text: "JAVA"},
+            {uuid: "9854897", text: "C++"},
           ],
         }
       },
@@ -48,10 +48,10 @@ const tmpSurveys = [
         description: "frameworks",
         data: {
           options: [
-            { uuid: "98559798", text: "Laravel"},
-            { uuid: "9449798", text: "ASP.Net"},
-            { uuid: "3399798", text: "Django"},
-            { uuid: "9854798", text: "Codeignitor"},
+            {uuid: "98559798", text: "Laravel"},
+            {uuid: "9449798", text: "ASP.Net"},
+            {uuid: "3399798", text: "Django"},
+            {uuid: "9854798", text: "Codeignitor"},
           ],
         }
       },
@@ -62,8 +62,8 @@ const tmpSurveys = [
         description: "english",
         data: {
           options: [
-            { uuid: "9855798", text: "Yes"},
-            { uuid: "944998", text: "No"},
+            {uuid: "9855798", text: "Yes"},
+            {uuid: "944998", text: "No"},
           ],
         }
       },
@@ -74,10 +74,10 @@ const tmpSurveys = [
         description: "tools",
         data: {
           options: [
-            { uuid: "98559798", text: "PHPStorm"},
-            { uuid: "9449798", text: "Navicat"},
-            { uuid: "3399798", text: "GitKraken"},
-            { uuid: "9854798", text: "Xampp"},
+            {uuid: "98559798", text: "PHPStorm"},
+            {uuid: "9449798", text: "Navicat"},
+            {uuid: "3399798", text: "GitKraken"},
+            {uuid: "9854798", text: "Xampp"},
           ],
         }
       },
@@ -86,16 +86,14 @@ const tmpSurveys = [
         type: "text",
         question: "Your email",
         description: "HR",
-        data: {
-        }
+        data: {}
       },
       {
         id: 7,
         type: "textarea",
         question: "Talk about yourself?",
         description: null,
-        data: {
-        }
+        data: {}
       },
     ],
   },
@@ -136,7 +134,7 @@ const store = createStore({
   },
   getters: {},
   actions: {
-    register({commit}, user){
+    register({commit}, user) {
       return axiosClient.post('/register', user)
         .then((data) => {
           commit('setUser', data);
@@ -145,21 +143,36 @@ const store = createStore({
     }
     ,
 
-    login({commit}, user)
-    {
+    login({commit}, user) {
       return axiosClient.post('/login', user)
         .then((response) => {
           commit('setUser', response);
           return response
         });
     },
-    logout({commit})
-    {
+    logout({commit}) {
       return axiosClient.post('/logout')
         .then((response) => {
           commit('logout');
           return response
         });
+    },
+    saveSurvey({commit}, survey) {
+      let response;
+      if (survey.id) {
+        response = axiosClient.put(`/survey/${survey.id}`, survey)
+          .then((res) => {
+            commit('updateSurvey', res.data);
+            return res;
+          });
+      } else {
+        response = axiosClient.post('/survey', survey)
+          .then((res) => {
+            commit('saveSurvey', res.data);
+            return res;
+          });
+      }
+      return response;
     }
   },
   mutations: {
@@ -171,7 +184,17 @@ const store = createStore({
       state.user.data = response.data.user;
       state.user.token = response.data.token;
       sessionStorage.setItem('Token', response.data.token);
-    }
+    },
+    saveSurvey: (state, survey) => {
+      state.surveys = [...state.surveys, survey.data];
+    },
+    updateSurvey: (state, survey) => {
+      state.surveys = state.surveys.map((s) => {
+        if (s.id === survey.data.id)
+          return survey.data;
+        return s;
+      });
+    },
   },
   modules: {},
 });

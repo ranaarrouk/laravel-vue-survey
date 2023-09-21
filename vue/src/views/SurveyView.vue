@@ -130,10 +130,11 @@ hover:bg-gray-50  focus:ring-2 focus:offset-ring-2 focus:outline-none focus:ring
   import {v4 as uuidv4} from "uuid";
 
   import store from "../store";
-  import {useRoute} from "vue-router";
+  import {useRoute, useRouter} from "vue-router";
   import {ref} from "vue";
 
   const route = useRoute();
+  const router = useRouter();
 
   // reactive value
   const model = ref({
@@ -179,6 +180,15 @@ hover:bg-gray-50  focus:ring-2 focus:offset-ring-2 focus:outline-none focus:ring
         return q;
       }
     );
+  }
+
+  function saveSurvey(){
+    store.dispatch('saveSurvey', model.value).then(({data}) => {
+      router.push({
+        name: 'SurveyView',
+        params: {id: data.data.id}
+      })
+    });
   }
 
 </script>
