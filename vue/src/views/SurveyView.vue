@@ -2,11 +2,14 @@
   <PageComponent>
     <template v-slot:header>
       <div class="flex justify-between items-center">
-        <h1 class="text-3xl text-grey-900 font-bold">{{ model.id? model.title : 'Create a survey'}} </h1>
+        <h1 class="text-3xl text-grey-900 font-bold">{{ route.params.id? model.title : 'Create a survey'}} </h1>
       </div>
     </template>
 
-    <form @submit.prevent="saveSurvey">
+    <div v-if="surveyLoading" class="flex justify-center text-xl font-bold text-indigo-500">
+      Loading...
+    </div>
+    <form v-else @submit.prevent="saveSurvey">
       <div class="shadow sm:rounded-md sm:overflow-hidden">
         <!--        Survey fields-->
         <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
@@ -132,10 +135,12 @@ hover:bg-gray-50  focus:ring-2 focus:offset-ring-2 focus:outline-none focus:ring
 
   import store from "../store";
   import {useRoute, useRouter} from "vue-router";
-  import {ref, watch} from "vue";
+  import {ref, watch, computed} from "vue";
 
   const route = useRoute();
   const router = useRouter();
+
+  const surveyLoading = computed(() => store.state.currentSurvey.loading);
 
   // reactive value
   const model = ref({
