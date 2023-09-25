@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSurveyRequest;
 use App\Http\Requests\UpdateSurveyRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use mysql_xdevapi\Exception;
 
 class SurveyController extends Controller
 {
@@ -25,8 +28,14 @@ class SurveyController extends Controller
      */
     public function store(StoreSurveyRequest $request)
     {
-        $result = Survey::create($request->validated());
-        return new SurveyResource($result);
+        $data = $request->validated();
+        if (isset($data['image']))
+        {
+            $relativePath = $this->saveImage($data['image']);
+            $data['image'] = $relativePath;
+        }
+        $survey = Survey::create($data);
+        return new SurveyResource($survey);
     }
 
     /**
@@ -68,5 +77,39 @@ class SurveyController extends Controller
         }
         $survey->delete();
         return response('', 204);
+    }
+
+    private function saveImage($image)
+    {
+        if (preg_match('/^data:image\/(\w+);base64,/', $image, $type))
+        {
+            $image = substr($image, strpos($image, ',') + 1);
+
+            $type = strtolower($type[1]);
+
+            if (!in_array($type, ['png', 'jpg', 'jpeg', 'gif']))
+                throw new \Exception('Invalid image type');
+
+           $image = str_replace(' ', '+', $image);
+           $image = base64_decode($image);
+
+           if ($image === false)
+               throw new \Exception('Invalid image');
+
+        }
+        else
+            throw new \Exception('Invalid image');
+
+        $file = Str::random() . '.' . $type;
+        $dir = 'images/';
+        $absolutePath = public_path($dir);
+        $relativePath = $dir . $file;
+        if (!File::exists($absolutePath))
+            File::makeDirectory($absolutePath, 0755, true);
+
+        file_put_contents($relativePath, $image);
+
+        return $relativePath;
+
     }
 }
