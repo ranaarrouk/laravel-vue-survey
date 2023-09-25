@@ -132,7 +132,7 @@ hover:bg-gray-50  focus:ring-2 focus:offset-ring-2 focus:outline-none focus:ring
 
   import store from "../store";
   import {useRoute, useRouter} from "vue-router";
-  import {ref} from "vue";
+  import {ref, watch} from "vue";
 
   const route = useRoute();
   const router = useRouter();
@@ -148,10 +148,18 @@ hover:bg-gray-50  focus:ring-2 focus:offset-ring-2 focus:outline-none focus:ring
     questions: []
   });
 
+  watch(
+    () => store.state.currentSurvey.data,
+    (newVal, oldVal) => {
+      model.value = {
+       ...JSON.parse(JSON.stringify(newVal)),
+       status: newVal.status !== 'draft',
+      }
+    }
+  );
+
   if (route.params.id) {
-    model.value = store.state.surveys.find(
-      (s) => s.id === parseInt(route.params.id)
-    )
+    store.dispatch('getSurvey', route.params.id);
   }
 
   function onImageChoose(ev) {

@@ -68,7 +68,7 @@ class SurveyController extends Controller
                 File::delete($absolutePath);
             }
         }
-        $survey->update();
+        $survey->update($data);
         return new SurveyResource($survey);
     }
 

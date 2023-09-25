@@ -129,6 +129,10 @@ const store = createStore({
       data: {},
       token: sessionStorage.getItem("Token")
     },
+    currentSurvey: {
+      loading: false,
+      data: {},
+    },
     surveys: [...tmpSurveys],
     questionTypes: ["text", "select", "radio", "checkbox", "textarea"]
   },
@@ -163,17 +167,30 @@ const store = createStore({
       if (survey.id) {
         response = axiosClient.put(`/survey/${survey.id}`, survey)
           .then((res) => {
-            commit('updateSurvey', res.data);
+            commit('setCurrentSurveyData', res.data);
             return res;
           });
       } else {
         response = axiosClient.post('/survey', survey)
           .then((res) => {
-            commit('saveSurvey', res.data);
+            commit('setCurrentSurveyData', res.data);
             return res;
           });
       }
       return response;
+    },
+    getSurvey({commit}, id)
+    {
+      commit('setCurrentSurveyLoading', true);
+      return axiosClient.get(`/survey/${id}`)
+        .then((res) => {
+          commit('setCurrentSurveyData', res.data);
+          commit('setCurrentSurveyLoading', false);
+          return res;
+        }).catch((err) => {
+        commit('setCurrentSurveyLoading', false);
+        throw err;
+      });
     }
   },
   mutations: {
@@ -186,16 +203,12 @@ const store = createStore({
       state.user.token = response.data.token;
       sessionStorage.setItem('Token', response.data.token);
     },
-    saveSurvey: (state, survey) => {
-      state.surveys = [...state.surveys, survey.data];
-    },
-    updateSurvey: (state, survey) => {
-      state.surveys = state.surveys.map((s) => {
-        if (s.id === survey.data.id)
-          return survey.data;
-        return s;
-      });
-    },
+    setCurrentSurveyLoading: (state, loading) => {
+      state.currentSurvey.loading = loading;
+    } ,
+    setCurrentSurveyData: (state, survey) => {
+      state.currentSurvey.data = survey.data;
+    }
   },
   modules: {},
 });
