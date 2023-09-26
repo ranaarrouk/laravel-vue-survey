@@ -3,6 +3,16 @@
     <template v-slot:header>
       <div class="flex justify-between items-center">
         <h1 class="text-3xl text-grey-900 font-bold">{{ route.params.id? model.title : 'Create a survey'}} </h1>
+        <button v-if="route.params.id"
+                @click="deleteSurvey()"
+                class="py-2 px-3 text-white bg-red-500 hover:bg-red-300">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+               stroke="currentColor" class="w-5 h-5 -mt-1 inline-block">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+          </svg>
+          Delete Survey
+        </button>
       </div>
     </template>
 
@@ -35,7 +45,7 @@
                px-3 py-2 border border-gray-300 text-sm font-medium text-grey-700
 hover:bg-gray-50  focus:ring-2 focus:offset-ring-2 focus:outline-none focus:ring-indigo-500">
                 <input @change="onImageChoose"
-                  type="file" class="absolute left-0 right-0 bottom-0 top-0 opacity-0 cursor-pointer">
+                       type="file" class="absolute left-0 right-0 bottom-0 top-0 opacity-0 cursor-pointer">
                 Change
               </button>
             </div>
@@ -157,8 +167,8 @@ hover:bg-gray-50  focus:ring-2 focus:offset-ring-2 focus:outline-none focus:ring
     () => store.state.currentSurvey.data,
     (newVal, oldVal) => {
       model.value = {
-       ...JSON.parse(JSON.stringify(newVal)),
-       status: newVal.status !== 'draft',
+        ...JSON.parse(JSON.stringify(newVal)),
+        status: newVal.status !== 'draft',
       }
     }
   );
@@ -199,7 +209,7 @@ hover:bg-gray-50  focus:ring-2 focus:offset-ring-2 focus:outline-none focus:ring
   function questionChange(question) {
     model.value.questions = model.value.questions.map(
       (q) => {
-        if(q.id === question.id){
+        if (q.id === question.id) {
           return JSON.parse(JSON.stringify(question));
         }
         return q;
@@ -207,7 +217,7 @@ hover:bg-gray-50  focus:ring-2 focus:offset-ring-2 focus:outline-none focus:ring
     );
   }
 
-  function saveSurvey(){
+  function saveSurvey() {
     store.dispatch('saveSurvey', model.value).then(({data}) => {
       router.push({
         name: 'SurveyView',
@@ -216,4 +226,14 @@ hover:bg-gray-50  focus:ring-2 focus:offset-ring-2 focus:outline-none focus:ring
     });
   }
 
+  function deleteSurvey() {
+    if(confirm('Are you sure to delete this survey?'))
+    {
+      store.dispatch('deleteSurvey', model.value.id).then(() => {
+        router.push({
+          name: 'Surveys'
+        });
+      })
+    }
+  }
 </script>

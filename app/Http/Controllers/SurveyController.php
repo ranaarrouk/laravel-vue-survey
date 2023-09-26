@@ -83,6 +83,11 @@ class SurveyController extends Controller
             return abort(403, 'unauthorised');
         }
         $survey->delete();
+        if($survey->image)
+        {
+            $absolutePath = public_path($survey->image);
+            File::delete($absolutePath);
+        }
         return response('', 204);
     }
 
