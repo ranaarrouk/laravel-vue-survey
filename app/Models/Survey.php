@@ -13,6 +13,11 @@ class Survey extends Model
 
     protected $fillable = ['user_id', 'title', 'image', 'description', 'status', 'expire_date'];
 
+    const TYPE_TEXT = 'text';
+    const TYPE_SELECT = 'select';
+    const TYPE_TEXTAREA = 'textarea';
+    const TYPE_RADIO = 'radio';
+    const TYPE_CHECKBOX = 'checkbox';
 
     public function getSlugOptions(): SlugOptions
     {
@@ -20,4 +25,9 @@ class Survey extends Model
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug');
     }
+    public function questions()
+    {
+        return $this->hasMany(SurveyQuestion::class);
+    }
+
 }
