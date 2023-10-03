@@ -17,9 +17,9 @@
     <div v-if="surveysLoading" class="flex justify-center text-xl font-bold text-indigo-500">
       Loading...
     </div>
-    <div v-else class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3"
-    >
-      <SurveyListItem v-for="survey in surveys"
+    <div v-else class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+      <SurveyListItem v-for="(survey, ind) in surveys" class="opacity-0 animate-fade-in-down"
+                      :style="{animationDelay: `${ind * 0.1}s`}"
                       :key="survey.id" :survey="survey" @delete="deleteSurvey(survey)"/>
     </div>
   </PageComponent>

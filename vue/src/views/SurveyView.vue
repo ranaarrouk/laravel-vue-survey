@@ -19,7 +19,7 @@
     <div v-if="surveyLoading" class="flex justify-center text-xl font-bold text-indigo-500">
       Loading...
     </div>
-    <form v-else @submit.prevent="saveSurvey">
+    <form v-else @submit.prevent="saveSurvey" class="animate-fade-in-down">
       <div class="shadow sm:rounded-md sm:overflow-hidden">
         <!--        Survey fields-->
         <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
